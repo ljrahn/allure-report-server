@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content%}
+<h1 align="center">Dates</h1>
+<ul class="list-group list-group-flush" id="notes">
+  {% for month in month_list %}
+  <li class="list-group-item">
+    <a href="{{ request.base_url + 'builds?month=' + month }}">
+      {{ month }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

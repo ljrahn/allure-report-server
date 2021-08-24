@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content%}
+<h1 align="center">Execution Runs</h1>
+<ul class="list-group list-group-flush" id="notes">
+  <li class="list-group-item">
+    <a href="{{ request.url_root + 'builds?month=' + month  }}"> .. </a>
+  </li>
+  </li>
+  {% for run in run_list %}
+  <li class="list-group-item">
+    <a href="{{ request.url + '#' }}">
+      {{ run }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
