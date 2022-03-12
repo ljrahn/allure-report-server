@@ -10,8 +10,9 @@ from libs.internal_api.internal_api import InternalAPI
 
 views = Blueprint('views', __name__)
 
-ALLOWED_EXTENSIONS = {'gz'}
+ALLOWED_EXTENSIONS = ['gz', 'png', 'jpg', 'jpeg']
 
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'uploads')
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -74,40 +75,34 @@ def execution_runs_listing():
 
 
 
-# @views.route('/upload-file', methods=['GET'])
-# def upload_form():
-#     print(f'upload_form: {request.method}')
-#     return render_template('upload.html')
+@views.route('/upload-file', methods=['GET'])
+def upload_form():
+    return render_template('upload.html')
 
 
-# @views.route('/upload-file', methods=['POST'])
-# def upload_file():
-#     print(f'upload_file: {request.method}')
-#     if request.method == 'POST':
-#         # check if the post request has the file part
+@views.route('/upload-file', methods=['POST'])
+def upload_file():
+    print(f'upload_file: {request.method}')
+    if request.method == 'POST':
+        # check if the post request has the file part
         
-#         files = request.files.getlist('files[]')
-#         # if user does not select file, browser also
-#         # submit an empty part without filename
-#         print(request.files)
-#         if 'files[]' not in request.files:
-#             flash('No file part')
-#             return abort(400)
-#         print(files)
-#         for file in files:
-#             if file and allowed_file(file.filename):
-#                 filename = secure_filename(file.filename)
+        files = request.files.getlist('files[]')
+        file = request.files['files[]']
+        print(files)
+        print(file)
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if 'files[]' not in request.files:
+            flash('No file part')
+            return abort(400)
+        print(files)
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                os.system(f'mkdir -p {app.config["UPLOAD_FOLDER"]}')
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-#                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-#                 now = datetime.datetime.now()
-#                 directory_to_save = f'{now.strftime("%B")}/{now.strftime("%d-%m-%Y_%H-%M-%S")}_{filename.split(".")[0]}'
-
-#                 os.system(f'mkdir -p {app.config["UPLOAD_FOLDER"]}/{directory_to_save}')
-#                 os.system(f'tar xf {app.config["UPLOAD_FOLDER"]}/{filename} -C {app.config["UPLOAD_FOLDER"]}/{directory_to_save}')
-#                 os.system(f'rm -rf {app.config["UPLOAD_FOLDER"]}/{filename}')
-
-#     return redirect(url_for('views.upload_form'))
+    return redirect(url_for('views.upload_form'))
 
 
 # @views.route('/allure-report', methods=['GET'])
